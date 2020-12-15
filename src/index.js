@@ -89,36 +89,25 @@ import '../src/styles.css'
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ТАймекр
 
-
+// Ссылки на ДОМ-елементы
 const refs = {
   startBtn: document.querySelector('button[data-action-start]'),
   stopBtn: document.querySelector('button[data-action-stop]'),
   clockface: document.querySelector('.js-clockface'),
 };
 
-
-refs.startBtn.addEventListener('click', startTimer)
-refs.stopBtn.addEventListener('click', stopTimer)
-
-function startTimer() {
-    timer.start()
-}
-function stopTimer() {
-    timer.stop()
-    refs.clockface.textContent = '00:00:00'
-}
-
-const timer = {
+// Добавляем обьект с методами
+const timer = { 
     intrvalId: null,
     isActive: false,
-    
+
     start() {
         if (this.isActive) {  // если тру тогда кнопку нажать повторно невозможно
             return
         }
-
+ 
         this.isActive =true  // При первом нажатии добавл тру
-        const startTime = Date.now()
+        const startTime = Date.now()  
        this.intrvalId = setInterval(() => {
             const curentTime = Date.now()
            const deltaTime = curentTime - startTime
@@ -128,17 +117,23 @@ const timer = {
 
     },
     stop() {
-        if (this.intrvalId) {
+        if (this.intrvalId) {    //если intrvalId ===true то выполни
             this.isActive = false  //При нажатии на стоп меняем на фолс
-            clearInterval(this.intrvalId)
+            clearInterval(this.intrvalId)  //Удаляет интервал
+             refs.clockface.textContent = '00:00:00'  //При нажатии на стоп обнули текст p
         }
     },
 }
+
+// Добавляем слушатель ПОСЛЕ ОБЬЕКТА С МЕТОДАМИ
+  //  >>>   bind() - служит для привязки контекстата. Ево используют если наши функц. внутри ОБЬЕКТА
+refs.startBtn.addEventListener('click', timer.start.bind(timer))
+refs.stopBtn.addEventListener('click', timer.stop.bind(timer))
+
 /*
    * - Принимает время в миллисекундах
    * - Высчитывает сколько в них вмещается часов/минут/секунд
    * - Возвращает обьект со свойствами hours, mins, secs
-   * - Адская копипаста со стека 💩
    */
   function getTimeComponents(time) {
     const hours = pad(
@@ -148,9 +143,10 @@ const timer = {
     const secs = pad(Math.floor((time % (1000 * 60)) / 1000));
 
     return (`${hours}:${mins}:${secs}`)
-  }
-/*
-   * Принимает число, приводит к строке и добавляет в начало 0 если число меньше 2-х знаков
+}
+  
+ /* padStart()
+  * Принимает число, приводит к строке и добавляет в начало 0 если число меньше 2-х знаков
    */
 function pad(value) {
     return String(value).padStart('2',0)
