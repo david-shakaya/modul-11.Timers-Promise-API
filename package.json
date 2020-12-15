@@ -20,7 +20,7 @@
   "bugs": {
     "url": "https://github.com/luxplanjay/webpack-starter-kit/issues"
   },
-  "homepage": "https://david-shakaya.github.io/change-theme",
+  "homepage": "https://david-shakaya.github.io/modul-11.Timers-Promise-API",
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@babel/plugin-proposal-class-properties": "^7.12.1",
