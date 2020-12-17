@@ -1,4 +1,5 @@
 
+
 import '../src/styles.css'
 
 /* 
@@ -167,11 +168,15 @@ function pad(value) {
   // reject -есл ошибка
 
 const promise = new Promise((resolve, reject) => {
-  // resolve('Успех')
-  // reject('Ощибка')
+  const success = Math.random() > 0.5;
+
   setTimeout(() => {
-   resolve('Успех')
-  }, 2000);
+    if (success) {
+      resolve('Успех')
+    }
+
+    reject('Ошибка')
+  }, 1000);
 })   
 // console.log(promise);
 
@@ -179,6 +184,232 @@ const promise = new Promise((resolve, reject) => {
 //promise.then(...,2 параметр) - Когда этот промис выполниться с ошибкой, то верни значение этого промиса "Оибка"
 
 // Но мы передаем только успех в then 
+// в catch ошибку
+
+let data;
+
 promise.then((result) => {
+  data = result
+  console.log(data)
+})
+.catch((error) => console.log(error))
+
+
+
+// ВАЖНО!!!     для получения каких то данных при успешном выполнении операц. Записываем внутрь колбекак как с DATA выше
+
+
+
+/*
+ * Цепочки промисов (chaining)
+ * Promise.prototype.catch(error)
+ * Promise.prototype.finally()
+//  */
+
+// function onFulfilled(result) {
+//   console.log('onFulfilled -> onFulfilled');
+//   console.log(`✅ ${result}`);
+// }
+
+// promise
+//   .then(onFulfilled)
+//   .then(x => {
+//     console.log(x);
+
+//     return 10;
+//   })
+//   .then(y => {
+//     console.log('y', y );
+//     return y + 10
+//   })
+//   .catch(error => console.log(error))
+//   .finally(() => console.log('Я буду выполнен в любом случае'));
+
+
+
+
+  //  >>>>>>>>>>>>>>> ПРОМИСИФИКАЦИЯ ФУНКЦИй
+// Как получить промис в функции
+
+const fetchUser = (userName) => {
+ return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const succes = Math.random() > 0.3;
+
+      if (succes) {
+        const user = { name: userName, age: 26, salary: 3500 }
+        resolve(user)
+      }
+
+      const error = "ПРоизошла ошибка"
+      reject(error)
+  },500)
+})
+}
+fetchUser('Mango').then(onFetchUserSucces).catch(onFetchUserError)
+
+
+function onFetchUserSucces(user) {
+  console.log(user);
+}
+
+function onFetchUserError(error) {
+  console.log(error);
+}
+
+
+// //  fetch - Обращение к бекенду
+// fetch('https://jsonplaceholder.typicode.com/todos/1')
+//   .then(res => res.json())   //.json() - принимает и читает тело Response stream. Возвращает promise (обещание)
+//   .then(console.log)  // если все хорошо залогирует обьекты с бекенда
+//   .catch(console.log)  // Если ошибка покажет ошибку
+
+
+
+  // >>>>>>>>>>>>>>>>> Функц для обработки данных с бекенда
+
+// const getUser = (id) => {
+// return fetch(`https://jsonplaceholder.typicode.com/todos/${id}`) 
+// .then(res => res.json())
+// }
+
+// getUser(21).then(console.log).catch(console.log)  // Возвращает юзера по ID
+
+
+
+// >>>>>>>>>>>>>>>>>>>>>> Задачка иподром
+
+const horses = [
+  'Secretariat',
+  'Eclipse',
+  'West Australian',
+  'Flying Fox',
+  'Seabiscuit',
+];
+
+
+const getRandomTime =(min, max) =>{
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+const run = (horse) => {
+ return new Promise((resolve) =>{
+    const time = getRandomTime(500, 3500)
+
+    setTimeout(() =>{
+
+      resolve({horse, time})
+    },time)
+  })
+}
+
+
+
+
+// run(horses[0]).then(console.log)
+const promises = horses.map(horse => run(horse))
+Promise.all(promises)
+  .then(result => {
   console.log(result);
 })
+  .catch(error => console.log(error))
+
+// //  HW -1
+// const delay = (ms) => {
+//  return new Promise((resolve) => {
+//     setTimeout(() => {
+//       resolve(ms)
+//    },ms)
+//  })
+// };
+
+// const logger = time => console.log(`Resolved after ${time}ms`);
+
+// // Вызовы функции для проверки
+// delay(2000).then(logger); // Resolved after 2000ms
+// delay(1000).then(logger); // Resolved after 1000ms
+// delay(1500).then(logger); // Resolved after 1500ms
+
+// hw - 2
+
+const users = [
+  { name: 'Mango', active: true },
+  { name: 'Poly', active: false },
+  { name: 'Ajax', active: true },
+  { name: 'Lux', active: false },
+];
+
+const toggleUserState = (allUsers, userName) => {
+  
+  return new Promise((resolve) =>{
+
+    resolve(allUsers.map(user =>
+      user.name === userName ? { ...user, active: !user.active } : user,
+    ))
+  })
+}
+
+
+const logger = updatedUsers => console.table(updatedUsers);
+
+/*
+ * Должно работать так
+ */
+toggleUserState(users, 'Mango').then(logger);
+toggleUserState(users, 'Lux').then(logger);
+
+// hw - 3
+
+
+
+const randomIntegerFromInterval = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+};
+
+
+let time=0
+
+const makeTransaction = (transaction) => {
+  const delay = randomIntegerFromInterval(200, 500)
+  return new Promise((resolve, reject) => {
+    
+    const canProcess = Math.random() > 0.3;
+    setTimeout(() => {
+
+    if (canProcess) {
+      resolve(transaction.id, delay);
+     time = delay
+    } 
+
+    reject(transaction.id);
+
+  }, delay);
+  })
+
+};
+
+
+const logSuccess = (id) => {
+  console.log(`Transaction ${id} processed in ${time}ms`);
+};
+
+const logError = id => {
+  console.warn(`Error processing transaction ${id}. Please try again later.`);
+};
+
+// ДОлжно так
+makeTransaction({ id: 70, amount: 150 })
+  .then(logSuccess)
+  .catch(logError);
+
+makeTransaction({ id: 71, amount: 230 })
+  .then(logSuccess)
+  .catch(logError);
+
+makeTransaction({ id: 72, amount: 75 })
+  .then(logSuccess)
+  .catch(logError);
+
+makeTransaction({ id: 73, amount: 100 })
+  .then(logSuccess)
+  .catch(logError);
