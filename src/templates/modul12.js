@@ -18,13 +18,13 @@ import articlesTempl from '../templates/articles.hbs'
 //     .then(data => console.log(data))
 
 
-/* >>>>>>>>>>>>>>>>>
- */
-const refs ={
-    articlesContainer: document.querySelector('.articles-js'),
-    searchForm: document.querySelector('.search-form-js'),
+// /* >>>>>>>>>>>>>>>>>
+//  */
+// const refs ={
+//     articlesContainer: document.querySelector('.articles-js'),
+//     searchForm: document.querySelector('.search-form-js'),
 
-}
+// }
 
 
     //  Публичный API (Бекенд) - на котором требуется авторизация
@@ -34,29 +34,31 @@ const refs ={
 //     .then(data => console.log(data.articles))
 
 // >>>>>>>> ТО же самое но делаем переменные(типа красивый код)
-// const url = 'http://newsapi.org/v2/top-headlines?country=ua&q='
-// let findNews = ''
-// const key = '&apiKey=9612ce51c4354d579a8c97e2de8f4083'
-// fetch(`${url}${findNews}${key}`)  
-//     .then(res => res.json())
-//     .then(data => {
-//         const markup = articlesTempl(data.articles)
-//         refs.articlesContainer.insertAdjacentHTML('beforeend',markup)
-//     })
-    
+
     // НУЖНО КОД ПОЧИСТИТЬ КАК В ВИДЕО РЕПЕТЫ
+
+
+const refs ={
+articlesContainer: document.querySelector('.articles-js'),
+searchForm: document.querySelector('.search-form-js'),
+}
+
 refs.searchForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const inputValue = e.target.query.value
+    refs.articlesContainer.innerHTML = ''
+    fetchArticles(inputValue)
+    
+})
 
-     refs.articlesContainer.innerHTML = ''
+function fetchArticles(searchQuery) {
     const url = 'http://newsapi.org/v2/top-headlines?country=ua&q='
- let findNews = inputValue
-const key = '&apiKey=9612ce51c4354d579a8c97e2de8f4083'
-fetch(`${url}${findNews}${key}`)  
+    const key = '&apiKey=9612ce51c4354d579a8c97e2de8f4083'
+    fetch(`${url}${searchQuery}${key}`)  
     .then(res => res.json())
     .then(data => {
         const markup = articlesTempl(data.articles)
         refs.articlesContainer.insertAdjacentHTML('beforeend',markup)
     })
-})
+}
+

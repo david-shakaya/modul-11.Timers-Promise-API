@@ -1,7 +1,8 @@
 
 
 import '../src/styles.css'
-import './templates/modul12'
+// import './templates/modul12'
+import './templates/modul-12.part-2'
 
 /* 
 * Метод setInterval()

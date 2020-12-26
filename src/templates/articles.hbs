@@ -1,3 +1,15 @@
-{{#each this}}
+{{!-- {{#each this}}
 <li class="lis"><a href="{{url}}{{findNews}}{{key}}">{{title}}</a></li>
+{{/each}} --}}
+
+
+
+{{!-- ЧАСТЬ 2 --}}{{!--Добавляем более продвунитую разметку и дп --}}
+
+{{#each this}}
+<li class="list-articles">
+    <img src="{{urlToImage}}" width="300px" alt="">
+    <a href="{{url}}{{findNews}}{{key}}">{{title}}</a>
+    <p>author: {{author}}</p>
+</li>
 {{/each}}

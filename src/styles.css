@@ -90,3 +90,20 @@ img {
 .timer-btn.is-active {
   background-color: #2196f3;
 }
+
+/*>>>>>> -  МОДУЛЬ 12 чассть 2 */
+
+.articles-two {
+  display: flex;
+  flex-wrap: wrap;
+}
+.list-articles {
+  list-style: none;
+  width: 300px;
+}
+.list-articles {
+  margin-right: 30px;
+}
+.list-articles:nth-child(4n) {
+  margin-right: 0px;
+}
