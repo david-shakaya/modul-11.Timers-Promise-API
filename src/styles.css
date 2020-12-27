@@ -111,3 +111,6 @@ img {
 .load-more-btn.is-hidden {
   display: none;
 }
+.spiner.is-hidden {
+  display: none;
+}
