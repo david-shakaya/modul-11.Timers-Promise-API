@@ -7,8 +7,11 @@ const refs ={
   getImg() {
    return document.querySelectorAll('.list-articles img')
   },
+  btnLoadMore: document.querySelector('[data-action="load-more"]'),
 
 }
+let page = 1
+let btnLoadMoreIsActive = false
 
 
 
@@ -16,22 +19,34 @@ refs.searchForm.addEventListener('submit', getValue)
 
 function getValue(e) {
   e.preventDefault()
-let inputValue = e.target[0].value
+  let inputValue = e.target[0].value
+  if (!inputValue) {
+    return
+  }
   refs.searchForm.reset()
+  page = 1
   fetchArticles(inputValue)
   refs.articlesContainer.innerHTML = ''
-  
-}
+  refs.btnLoadMore.classList.remove('is-hidden')
 
+  if (!btnLoadMoreIsActive) {
+    btnLoadMoreIsActive = true
+    refs.btnLoadMore.addEventListener('click', () => {
+      page += 1
+      fetchArticles(inputValue)
+    })
+  }
+}
 function fetchArticles(inputValue) {
 const url = 'https://newsapi.org/v2/everything?q='
-const key = '&apiKey=9612ce51c4354d579a8c97e2de8f4083'
+const key = `&apiKey=9612ce51c4354d579a8c97e2de8f4083&pageSize=10&page=${page}`
 fetch(`${url}${inputValue}${key}`)
     .then(response => response.json())
     .then(data => {
         const markup = articlesTempl(data.articles)
       refs.articlesContainer.insertAdjacentHTML('beforeend', markup)
       addImgNotFound()
+      // page+=1
     })
 }
 
@@ -42,3 +57,4 @@ function addImgNotFound() {
        }
      });
 }
+

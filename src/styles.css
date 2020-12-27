@@ -107,3 +107,7 @@ img {
 .list-articles:nth-child(4n) {
   margin-right: 0px;
 }
+
+.load-more-btn.is-hidden {
+  display: none;
+}
